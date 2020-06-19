@@ -1,90 +1,58 @@
-import React, {useState, useEffect} from 'react';
-import {Text} from 'react-native';
+import React, {useEffect, useState, useContext} from 'react';
+import {Text, AsyncStorage, ActivityIndicator, Button} from 'react-native';
 import {
   createStackNavigator,
   CardStyleInterpolators,
-  HeaderTitle,
 } from '@react-navigation/stack';
 import {NavigationContainer} from '@react-navigation/native';
-import {TouchableOpacity} from 'react-native-gesture-handler';
 import {useForm} from 'react-hook-form';
-import {
-  Container,
-  Header,
-  TextField,
-  StyledButton,
-} from '../shared/styles/styles';
+import LoginScreen from '../Screens/AuthScreens/LoginScreen';
+import RegisterScreen from '../Screens/AuthScreens/RegisterScreen';
+import {Container} from './styles/styles';
+import {AuthContext} from './Providers/AuthProvider';
 
 const Routes = () => {
-  const onRegister = (data) => {
-    console.log('register', data);
-  };
-  const onLogin = (data) => {
-    console.log('login', data);
-  };
-
+  const [loading, setLoading] = useState(false);
   const {register, handleSubmit, setValue} = useForm();
+  const {loginUser, logout} = useContext(AuthContext);
 
   useEffect(() => {
     register('email');
     register('password');
-  }, [register]);
+  }, [register, loginUser]);
 
   const Stack = createStackNavigator();
-
-  const Login = ({navigation}) => (
-    <Container>
-      <Header>Login</Header>
-      <TextField
-        placeholder="email"
-        underlineColorAndroid={'transparent'}
-        placeholderTextColor="#FFF"
-        onChangeText={(text) => setValue('email', text)}
-      />
-      <TextField
-        placeholder="password"
-        underlineColorAndroid={'transparent'}
-        placeholderTextColor="#FFF"
-        secureTextEntry={true}
-        onChangeText={(text) => setValue('password', text)}
-      />
-      <StyledButton title="login" onPress={handleSubmit(onLogin)}>
-        Login
-      </StyledButton>
-
-      <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-        <Text style={{color: '#fff'}}>
-          Dont have an account yet? Register Here!
-        </Text>
-      </TouchableOpacity>
-    </Container>
-  );
-  const Register = ({navigation}) => (
-    <Container>
-      <Header>Register</Header>
-      <TextField
-        placeholder="email"
-        underlineColorAndroid={'transparent'}
-        placeholderTextColor="#FFF"
-        onChangeText={(text) => setValue('email', text)}
-      />
-      <TextField
-        placeholder="password"
-        underlineColorAndroid={'transparent'}
-        placeholderTextColor="#FFF"
-        secureTextEntry={true}
-        onChangeText={(text) => setValue('password', text)}
-      />
-
-      <StyledButton title="Register" onPress={handleSubmit(onRegister)}>
-        Register
-      </StyledButton>
-      <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-        <Text style={{color: '#fff'}}>Already registered? Login Here!</Text>
-      </TouchableOpacity>
-    </Container>
+  const RegisterComponent = (props) => (
+    <RegisterScreen
+      {...props}
+      setValue={setValue}
+      handleSubmit={handleSubmit}
+    />
   );
 
+  const LoginComponent = (props) => (
+    <LoginScreen
+      {...props}
+      setValue={setValue}
+      handleSubmit={handleSubmit}
+      setLoading={setLoading}
+    />
+  );
+  if (loading) {
+    return (
+      <Container>
+        <ActivityIndicator size="large" />
+      </Container>
+    );
+  }
+  const LoggedIn = () => (
+    <Container>
+      <Text>Logged IN</Text>
+      <Button title="logout" onPress={logout}>
+        LOGOUT
+      </Button>
+    </Container>
+  );
   return (
     <NavigationContainer>
       <Stack.Navigator
@@ -94,16 +62,22 @@ const Routes = () => {
           cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
           headerTitleAlign: 'center',
         }}>
-        <Stack.Screen
-          name="Login"
-          options={{headerTitle: 'Sign In'}}
-          component={Login}
-        />
-        <Stack.Screen
-          name="Register"
-          options={{headerTitle: 'Sign Up'}}
-          component={Register}
-        />
+        {loginUser ? (
+          <Stack.Screen name="LoggedIn" component={LoggedIn} />
+        ) : (
+          <>
+            <Stack.Screen
+              name="Login"
+              options={{headerTitle: 'Sign In'}}
+              component={LoginComponent}
+            />
+            <Stack.Screen
+              name="Register"
+              options={{headerTitle: 'Sign Up'}}
+              component={RegisterComponent}
+            />
+          </>
+        )}
       </Stack.Navigator>
     </NavigationContainer>
   );

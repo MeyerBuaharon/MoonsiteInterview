@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import Routes from './src/shared/route';
-import store from './src/shared/store';
+import AuthProvider from './src/shared/Providers/AuthProvider';
 
 const Root = styled.View`
   flex: 1;
@@ -12,9 +12,11 @@ const Root = styled.View`
 
 const App = () => {
   return (
-    <Root>
-      <Routes />
-    </Root>
+    <AuthProvider>
+      <Root>
+        <Routes />
+      </Root>
+    </AuthProvider>
   );
 };
 

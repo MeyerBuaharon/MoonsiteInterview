@@ -1,17 +1,23 @@
-import React, {Children, useState} from 'react';
+import React, {useState} from 'react';
+import {AsyncStorage} from 'react-native';
 
 export const AuthContext = React.createContext({});
 
 const AuthProvider = ({children}) => {
-  const [user, setUser] = useState(null);
+  const [loginUser, setUser] = useState(null);
   return (
     <AuthContext.Provider
       value={{
-        user,
+        loginUser,
         login: () => {
-          setUser({username: 'bob'});
+          AsyncStorage.getItem('user').then(
+            (isLogin) => isLogin && setUser(isLogin),
+          );
         },
-        logout: () => {},
+        logout: () => {
+          AsyncStorage.removeItem('user');
+          setUser(null);
+        },
       }}>
       {children}
     </AuthContext.Provider>

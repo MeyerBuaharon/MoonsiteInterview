@@ -29,3 +29,8 @@ export const StyledButton = styled.Button`
   font-weight: bold;
   color: #fff;
 `;
+
+export const CenteredStyledText = styled.Text`
+  color: #fff;
+  text-align: center;
+`;
