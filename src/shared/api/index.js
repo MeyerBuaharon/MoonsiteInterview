@@ -36,5 +36,12 @@ export const getAllPosts = (token) =>
 
 export const addPost = (token, data) =>
   api
-    .get('/post/add-post', data, {headers: {Authorization: token}})
+    .post('/post/add-post', data, {headers: {Authorization: token}})
+    .then((res) => res);
+
+export const deletePost = (token, postId) =>
+  api
+    .delete(`/post/delete-post-by-id/${postId}`, {
+      headers: {Authorization: token},
+    })
     .then((res) => res);

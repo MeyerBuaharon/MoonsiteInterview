@@ -1,5 +1,6 @@
 import React, {useCallback, useContext} from 'react';
 import {AsyncStorage} from 'react-native';
+import {Controller} from 'react-hook-form';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {
   Container,
@@ -9,9 +10,17 @@ import {
   CenteredStyledText,
 } from '../../shared/styles/styles';
 import {getLoginUser} from '../../shared/api/index';
+import {useForm} from 'react-hook-form';
 import {AuthContext} from '../../shared/Providers/AuthProvider';
 
-const LoginScreen = ({navigation, setValue, handleSubmit}) => {
+const LoginScreen = ({navigation}) => {
+  const {
+    handleSubmit,
+    formState: {isValid},
+    control,
+  } = useForm({
+    mode: 'onChange',
+  });
   const {login, setLoading} = useContext(AuthContext);
 
   const onLogin = useCallback(
@@ -37,20 +46,33 @@ const LoginScreen = ({navigation, setValue, handleSubmit}) => {
   return (
     <Container>
       <Header>Login</Header>
-      <TextField
+      <Controller
         placeholder="email"
-        underlineColorAndroid={'transparent'}
         placeholderTextColor="#FFF"
-        onChangeText={(text) => setValue('email', text)}
+        underlineColorAndroid={'transparent'}
+        as={TextField}
+        rules={{required: true}}
+        control={control}
+        name="email"
+        onChangeName="onChangeText"
       />
-      <TextField
+
+      <Controller
         placeholder="password"
-        underlineColorAndroid={'transparent'}
         placeholderTextColor="#FFF"
+        underlineColorAndroid={'transparent'}
+        as={TextField}
+        rules={{required: true}}
+        control={control}
         secureTextEntry={true}
-        onChangeText={(text) => setValue('password', text)}
+        name="password"
+        onChangeName="onChangeText"
       />
-      <StyledButton title="login" onPress={handleSubmit(onLogin)}>
+
+      <StyledButton
+        disabled={!isValid}
+        title="login"
+        onPress={handleSubmit(onLogin)}>
         Login
       </StyledButton>
 

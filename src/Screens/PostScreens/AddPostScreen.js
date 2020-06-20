@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useContext, useEffect, useCallback} from 'react';
 import ImagePicker from 'react-native-image-picker';
 import styled from 'styled-components';
 
@@ -10,6 +10,10 @@ import {
   Container,
   PostImage,
 } from '../../shared/styles/styles';
+import {AuthContext} from '../../shared/Providers/AuthProvider';
+import {useForm} from 'react-hook-form';
+import {addPost} from '../../shared/api';
+import {ActivityIndicator} from 'react-native';
 
 const StyledPostImage = styled(PostImage)`
   border-radius: 15px;
@@ -26,26 +30,39 @@ const ChoosePhotoText = styled.Text`
 `;
 
 const AddPostScreen = () => {
+  const {loginUser, setLoading, loading} = useContext(AuthContext);
   const [photo, setPhoto] = useState();
+  const {register, handleSubmit, setValue, errors} = useForm();
 
-  const uploadPost = () => console.log('upload');
+  useEffect(() => {
+    register('title');
+    register('image_url');
+  }, [register]);
+
+  const uploadPost = useCallback(
+    async (data) => {
+      setLoading(true);
+      console.log('result', loginUser.token, data);
+      const result = await addPost(loginUser.token, data).then(
+        setLoading(false),
+      );
+    },
+    [setLoading, loginUser],
+  );
 
   const choosePhoto = () => {
-    const options = {
-      title: 'Select Avatar',
-      customButtons: [{name: 'fb', title: 'Choose Photo from Facebook'}],
-      storageOptions: {
-        skipBackup: true,
-        path: 'images',
-      },
-    };
-
-    ImagePicker.launchImageLibrary(options, (response) => {
+    ImagePicker.launchImageLibrary({}, (response) => {
       setPhoto(response);
-      console.log('response.data', response.data);
+      setValue('image_url', `data:image/png;base64,${response.data}`);
     });
   };
-
+  if (loading) {
+    return (
+      <Container>
+        <ActivityIndicator size="large" />
+      </Container>
+    );
+  }
   return (
     <ScrolledContainer>
       <TabHeader>Add New Post</TabHeader>
@@ -54,14 +71,14 @@ const AddPostScreen = () => {
           placeholder="Title"
           underlineColorAndroid={'transparent'}
           placeholderTextColor="#FFF"
-          onChangeText={() => console.log('')}
+          onChangeText={(text) => setValue('title', text)}
         />
         <StyledPostImage source={{uri: photo && photo.uri}} />
         <ChoosePhoto onPress={choosePhoto}>
           <ChoosePhotoText>Choose Photo</ChoosePhotoText>
         </ChoosePhoto>
 
-        <StyledButton title="Upload Post" onPress={uploadPost} />
+        <StyledButton title="Upload Post" onPress={handleSubmit(uploadPost)} />
       </Container>
     </ScrolledContainer>
   );

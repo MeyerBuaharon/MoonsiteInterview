@@ -4,7 +4,6 @@ import {
   createStackNavigator,
   CardStyleInterpolators,
 } from '@react-navigation/stack';
-import {useForm} from 'react-hook-form';
 import LoginScreen from '../Screens/AuthScreens/LoginScreen';
 import RegisterScreen from '../Screens/AuthScreens/RegisterScreen';
 import {Container} from '../shared/styles/styles';
@@ -12,32 +11,9 @@ import {AuthContext} from '../shared/Providers/AuthProvider';
 import HomeScreen from '../Screens/HomeScreen/HomeScreen';
 
 const Routes = () => {
-  const {register, handleSubmit, setValue, errors} = useForm();
   const {loginUser, loading} = useContext(AuthContext);
 
-  useEffect(() => {
-    register('email');
-    register('password');
-  }, [register, loginUser]);
-
   const Stack = createStackNavigator();
-  const RegisterComponent = (props) => (
-    <RegisterScreen
-      {...props}
-      setValue={setValue}
-      handleSubmit={handleSubmit}
-    />
-  );
-
-  const LoginComponent = (props) => (
-    <LoginScreen
-      {...props}
-      setValue={setValue}
-      handleSubmit={handleSubmit}
-      register={register}
-      errors={errors}
-    />
-  );
 
   const LoggedIn = () => <HomeScreen />;
   if (loading) {
@@ -62,12 +38,12 @@ const Routes = () => {
           <Stack.Screen
             name="Login"
             options={{headerTitle: 'Sign In'}}
-            component={LoginComponent}
+            component={LoginScreen}
           />
           <Stack.Screen
             name="Register"
             options={{headerTitle: 'Sign Up'}}
-            component={RegisterComponent}
+            component={RegisterScreen}
           />
         </>
       )}
