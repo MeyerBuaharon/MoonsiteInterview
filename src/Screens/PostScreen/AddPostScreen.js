@@ -11,7 +11,7 @@ import {
   PostImage,
 } from '../../shared/styles/styles';
 import {AuthContext} from '../../shared/Providers/AuthProvider';
-import {useForm} from 'react-hook-form';
+import {useForm, Controller} from 'react-hook-form';
 import {addPost} from '../../shared/api';
 import {ActivityIndicator} from 'react-native';
 
@@ -32,7 +32,7 @@ const ChoosePhotoText = styled.Text`
 const AddPostScreen = () => {
   const {loginUser, setLoading, loading} = useContext(AuthContext);
   const [photo, setPhoto] = useState();
-  const {register, handleSubmit, setValue, errors} = useForm();
+  const {register, handleSubmit, setValue, control} = useForm();
 
   useEffect(() => {
     register('title');
@@ -42,10 +42,9 @@ const AddPostScreen = () => {
   const uploadPost = useCallback(
     async (data) => {
       setLoading(true);
-      console.log('result', loginUser.token, data);
-      const result = await addPost(loginUser.token, data).then(
-        setLoading(false),
-      );
+      const result = await addPost(loginUser.token, data);
+      setLoading(false);
+      console.log('result', result);
     },
     [setLoading, loginUser],
   );
@@ -67,12 +66,17 @@ const AddPostScreen = () => {
     <ScrolledContainer>
       <TabHeader>Add New Post</TabHeader>
       <Container>
-        <TextField
+        <Controller
           placeholder="Title"
-          underlineColorAndroid={'transparent'}
           placeholderTextColor="#FFF"
-          onChangeText={(text) => setValue('title', text)}
+          underlineColorAndroid={'transparent'}
+          as={TextField}
+          rules={{required: true}}
+          control={control}
+          name="title"
+          onChangeName="onChangeText"
         />
+
         <StyledPostImage source={{uri: photo && photo.uri}} />
         <ChoosePhoto onPress={choosePhoto}>
           <ChoosePhotoText>Choose Photo</ChoosePhotoText>

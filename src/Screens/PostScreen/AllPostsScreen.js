@@ -35,7 +35,6 @@ const AllPostsScreen = () => {
         'something went wrong with following, please try again later...',
       );
     }
-    console.log('useEffect');
     setRerender('rerender');
   };
   const deleteAlert = (data) =>
@@ -63,8 +62,8 @@ const AllPostsScreen = () => {
               Alert.alert(
                 'Something went wrong with deleting your post, please try again later.',
               );
-              setLoading(false);
             }
+            setLoading(false);
           },
         },
       ],

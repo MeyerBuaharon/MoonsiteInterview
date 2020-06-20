@@ -1,5 +1,5 @@
 import React, {useEffect, useContext, useState} from 'react';
-import {Text, ActivityIndicator} from 'react-native';
+import {ActivityIndicator} from 'react-native';
 import styled from 'styled-components';
 
 import {TabHeader, ScrolledContainer} from '../../shared/styles/styles';
@@ -37,7 +37,6 @@ const FollowersScreen = () => {
         setMyFollowers(followers.data);
       });
     });
-    console.log(myFollowing);
 
     setLoading(false);
   }, [loginUser, setLoading, myFollowing]);
