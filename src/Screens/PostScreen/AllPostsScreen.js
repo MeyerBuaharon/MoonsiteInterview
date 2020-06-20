@@ -1,9 +1,14 @@
 import React, {useEffect, useContext, useState} from 'react';
-import {AuthContext} from '../../shared/Providers/AuthProvider';
-import {StyleSheet, ActivityIndicator, Text, Alert} from 'react-native';
-import {getAllPosts, deletePost} from '../../shared/api';
+import {StyleSheet, ActivityIndicator, Alert} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
+import {
+  getAllPosts,
+  deletePost,
+  followUser,
+  getFollowing,
+} from '../../shared/api';
+import {AuthContext} from '../../shared/Providers/AuthProvider';
 import {
   ScrolledContainer,
   TabHeader,
@@ -17,7 +22,22 @@ import {
 const AllPostsScreen = () => {
   const {loginUser, setLoading, loading} = useContext(AuthContext);
   const [posts, setPosts] = useState(null);
+  const [following, setFollowing] = useState(null);
+  const [rerender, setRerender] = useState();
 
+  const unFollowUser = () => Alert.alert('unfollowing isnt in the api yet');
+
+  const onFollowUser = async (data) => {
+    setLoading(true);
+    const result = await followUser(loginUser.token, {f_user_id: data});
+    if (result === undefined) {
+      Alert.alert(
+        'something went wrong with following, please try again later...',
+      );
+    }
+    console.log('useEffect');
+    setRerender('rerender');
+  };
   const deleteAlert = (data) =>
     Alert.alert(
       'Remove Post',
@@ -31,6 +51,7 @@ const AllPostsScreen = () => {
           text: 'Yes',
           onPress: async () => {
             const result = await deletePost(loginUser.token, data.post_id);
+            setLoading(true);
             if (result.res) {
               let newPosts = [...posts];
               newPosts.splice(
@@ -42,6 +63,7 @@ const AllPostsScreen = () => {
               Alert.alert(
                 'Something went wrong with deleting your post, please try again later.',
               );
+              setLoading(false);
             }
           },
         },
@@ -53,9 +75,12 @@ const AllPostsScreen = () => {
     setLoading(true);
     getAllPosts(loginUser.token).then((items) => {
       setPosts(items.data);
+      getFollowing(loginUser.token).then((item) => {
+        setFollowing(item.data);
+      });
       setLoading(false);
     });
-  }, [setPosts, loginUser, setLoading]);
+  }, [setPosts, loginUser, setLoading, rerender]);
 
   if (loading) {
     return (
@@ -74,12 +99,29 @@ const AllPostsScreen = () => {
             <PostDetailsContainer>
               <Ionicons name="ios-person" size={40} color="#000" />
               <PostDetails>{data.title}</PostDetails>
-              {loginUser.user_id === data.user_id && (
+              {loginUser.user_id === data.user_id ? (
                 <Ionicons
                   name="ios-close-circle"
                   size={40}
                   color="red"
                   onPress={() => deleteAlert(data)}
+                />
+              ) : following &&
+                following.find(
+                  (follower) => follower.f_user_id === data.user_id,
+                ) ? (
+                <Ionicons
+                  name="ios-checkmark-circle"
+                  size={40}
+                  color="blue"
+                  onPress={() => unFollowUser(data.user_id)}
+                />
+              ) : (
+                <Ionicons
+                  name="ios-checkmark-circle-outline"
+                  size={40}
+                  color="blue"
+                  onPress={() => onFollowUser(data.user_id)}
                 />
               )}
             </PostDetailsContainer>

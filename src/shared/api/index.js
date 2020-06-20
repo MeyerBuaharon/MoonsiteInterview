@@ -32,16 +32,43 @@ export const register = (credentials) =>
 export const getAllPosts = (token) =>
   api
     .get('/post/get-all-posts', {headers: {Authorization: token}})
-    .then((res) => res);
+    .then((res) => res)
+    .catch((error) => console.log(error));
 
 export const addPost = (token, data) =>
   api
     .post('/post/add-post', data, {headers: {Authorization: token}})
-    .then((res) => res);
+    .then((res) => res)
+    .catch((error) => console.log(error));
 
 export const deletePost = (token, postId) =>
   api
     .delete(`/post/delete-post-by-id/${postId}`, {
       headers: {Authorization: token},
     })
-    .then((res) => res);
+    .then((res) => res)
+    .catch((error) => console.log(error));
+
+export const followUser = (token, userId) =>
+  api
+    .post('/follower/add-follower', userId, {
+      headers: {Authorization: token},
+    })
+    .then((res) => res)
+    .catch((error) => console.log(error));
+
+export const getFollowing = (token) =>
+  api
+    .get('/follower/get-followers-by-user-id', {
+      headers: {Authorization: token},
+    })
+    .then((res) => res)
+    .catch((error) => console.log(error));
+
+export const getFollowers = (token) =>
+  api
+    .get('/follower/get-my-followers', {
+      headers: {Authorization: token},
+    })
+    .then((res) => res)
+    .catch((error) => console.log(error));

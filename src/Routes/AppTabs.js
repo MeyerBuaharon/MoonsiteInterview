@@ -1,28 +1,25 @@
-import React, {useContext, useMemo} from 'react';
+import React, {useContext} from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {NavigationContainer} from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-import Routes from '../Routes/route';
-import AllPostsScreen from '../Screens/PostScreens/AllPostsScreen';
-import {Text, View} from 'react-native';
-import AddPostScreen from '../Screens/PostScreens/AddPostScreen';
+import {
+  AuthenticationScreen,
+  FollowersScreen,
+  AllPostsScreen,
+  AddPostScreen,
+} from '../Screens/';
 import {AuthContext} from '../shared/Providers/AuthProvider';
 
 const Tabs = createBottomTabNavigator();
 
 const AppTabs = () => {
-  const Dummy = () => (
-    <View>
-      <Text>dummy</Text>
-    </View>
-  );
   const {loginUser} = useContext(AuthContext);
 
   return (
     <NavigationContainer>
       {!loginUser ? (
-        <Routes />
+        <AuthenticationScreen />
       ) : (
         <Tabs.Navigator
           screenOptions={({route}) => ({
@@ -59,11 +56,10 @@ const AppTabs = () => {
             activeTintColor: '#36485f',
             inactiveTintColor: 'gray',
           }}>
-          <Tabs.Screen name="Home" component={Routes} />
+          <Tabs.Screen name="Home" component={AuthenticationScreen} />
           <Tabs.Screen name="Posts" component={AllPostsScreen} />
           <Tabs.Screen name="Add Post" component={AddPostScreen} />
-          <Tabs.Screen name="Followers" component={Dummy} />
-          <Tabs.Screen name="Settings" component={Dummy} />
+          <Tabs.Screen name="Followers" component={FollowersScreen} />
         </Tabs.Navigator>
       )}
     </NavigationContainer>

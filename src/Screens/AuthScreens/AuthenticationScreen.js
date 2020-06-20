@@ -1,16 +1,15 @@
-import React, {useEffect, useState, useContext} from 'react';
+import React, {useContext} from 'react';
 import {ActivityIndicator} from 'react-native';
 import {
   createStackNavigator,
   CardStyleInterpolators,
 } from '@react-navigation/stack';
-import LoginScreen from '../Screens/AuthScreens/LoginScreen';
-import RegisterScreen from '../Screens/AuthScreens/RegisterScreen';
-import {Container} from '../shared/styles/styles';
-import {AuthContext} from '../shared/Providers/AuthProvider';
-import HomeScreen from '../Screens/HomeScreen/HomeScreen';
 
-const Routes = () => {
+import {LoginScreen, RegisterScreen, HomeScreen} from '../';
+import {Container} from '../../shared/styles/styles';
+import {AuthContext} from '../../shared/Providers/AuthProvider';
+
+const AuthenticationScreen = () => {
   const {loginUser, loading} = useContext(AuthContext);
 
   const Stack = createStackNavigator();
@@ -51,4 +50,4 @@ const Routes = () => {
   );
 };
 
-export default Routes;
+export default AuthenticationScreen;
