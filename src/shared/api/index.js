@@ -23,8 +23,18 @@ export const register = (credentials) =>
   api
     .post('usr/register', credentials)
     .then((res) => {
-      console.log(res);
+      return res;
     })
     .catch((error) => {
       console.log(error);
     });
+
+export const getAllPosts = (token) =>
+  api
+    .get('/post/get-all-posts', {headers: {Authorization: token}})
+    .then((res) => res);
+
+export const addPost = (token, data) =>
+  api
+    .get('/post/add-post', data, {headers: {Authorization: token}})
+    .then((res) => res);

@@ -1,8 +1,8 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import styled from 'styled-components';
 
-import Routes from './src/shared/route';
 import AuthProvider from './src/shared/Providers/AuthProvider';
+import AppTabs from './src/Tabs/AppTabs';
 
 const Root = styled.View`
   flex: 1;
@@ -14,7 +14,7 @@ const App = () => {
   return (
     <AuthProvider>
       <Root>
-        <Routes />
+        <AppTabs />
       </Root>
     </AuthProvider>
   );

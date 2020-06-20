@@ -8,6 +8,19 @@ export const Container = styled.View`
   padding-right: 60px;
 `;
 
+export const TabHeader = styled.Text`
+  text-align: center;
+  background: #fff;
+  padding: 15px;
+  font-size: 20px;
+  font-weight: bold;
+`;
+
+export const ScrolledContainer = styled.ScrollView`
+  flex: 1;
+  background-color: #36485f;
+`;
+
 export const Header = styled.Text`
   font-size: 24px;
   color: #fff;
@@ -33,4 +46,28 @@ export const StyledButton = styled.Button`
 export const CenteredStyledText = styled.Text`
   color: #fff;
   text-align: center;
+`;
+
+export const PostImage = styled.Image`
+  height: 300px;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+`;
+
+export const Card = styled.View`
+  width: 95%;
+  background-color: #fff;
+  margin: 10px;
+  align-self: center;
+  flex: 1;
+`;
+
+export const PostDetailsContainer = styled.View`
+  padding: 10px;
+  flex-direction: row;
+`;
+
+export const PostDetails = styled.Text`
+  text-align: center;
+  flex: 1;
 `;

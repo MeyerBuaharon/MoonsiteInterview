@@ -11,8 +11,8 @@ import {
 import {getLoginUser} from '../../shared/api/index';
 import {AuthContext} from '../../shared/Providers/AuthProvider';
 
-const LoginScreen = ({navigation, setValue, handleSubmit, setLoading}) => {
-  const {login} = useContext(AuthContext);
+const LoginScreen = ({navigation, setValue, handleSubmit}) => {
+  const {login, setLoading} = useContext(AuthContext);
 
   const onLogin = useCallback(
     async (data) => {

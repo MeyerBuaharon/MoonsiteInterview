@@ -1,17 +1,21 @@
 import React, {useState} from 'react';
-import {AsyncStorage} from 'react-native';
+import {AsyncStorage, ActivityIndicator} from 'react-native';
 
 export const AuthContext = React.createContext({});
 
 const AuthProvider = ({children}) => {
   const [loginUser, setUser] = useState(null);
+  const [loading, setLoading] = useState(false);
+
   return (
     <AuthContext.Provider
       value={{
         loginUser,
+        loading,
+        setLoading,
         login: () => {
           AsyncStorage.getItem('user').then(
-            (isLogin) => isLogin && setUser(isLogin),
+            (isLogin) => isLogin && setUser(JSON.parse(isLogin)),
           );
         },
         logout: () => {
